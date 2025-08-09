@@ -1,18 +1,30 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from "next/image"
 import { motion } from "framer-motion"
 import { Heart, Calendar, MapPin, Camera, Gift, Star } from "lucide-react"
 import { cn, formatDate, getRelativeTime } from "@/lib/utils"
-import dynamic from 'next/dynamic'
 import { FallingHeartsAnimation } from '@/app/components/falling-heart'
 import FloatingBackgroundAnimation from '@/app/components/animation-background'
 import { BowlingAnimation } from '@/app/components/bowling-animation'
 import { BeachWaveAnimation } from '@/app/components/beach-wave-animation'
 
+// Define proper TypeScript interfaces
+interface TimelineEvent {
+  id: number
+  date: string
+  title: string
+  description: string
+  location: string
+  type: 'meeting' | 'celebration' | 'travel' | 'milestone'
+  image: string
+  color: string
+  hasCustomAnimation: boolean
+  animationType?: 'bowling' | 'beach'
+}
+
 // Sample timeline data - replace with your actual memories!
-const timelineEvents = [
+const timelineEvents: TimelineEvent[] = [
   {
     id: 1,
     date: "2025-07-12",
@@ -72,7 +84,7 @@ const timelineEvents = [
   }
 ]
 
-const getIcon = (type: string) => {
+const getIcon = (type: TimelineEvent['type']) => {
   switch (type) {
     case 'meeting': return Heart
     case 'celebration': return Star
@@ -95,7 +107,7 @@ function TimelinePage() {
     setVisibleAnimations(prev => new Set([...prev, eventId]))
   }
 
-  const renderCustomAnimation = (event: any, isVisible: boolean) => {
+  const renderCustomAnimation = (event: TimelineEvent, isVisible: boolean) => {
     switch (event.animationType) {
       case 'bowling':
         return (
@@ -154,7 +166,6 @@ function TimelinePage() {
             
             <div className="space-y-16">
               {timelineEvents.map((event, index) => {
-                const Icon = getIcon(event.type)
                 const isLeft = index % 2 === 0
                 
                 return (
@@ -236,7 +247,7 @@ function TimelinePage() {
             </h2>
             
             <p className="font-elegant text-lg text-gray-600">
-              Here's to many more beautiful memories together ✨
+              Here&apos;s to many more beautiful memories together ✨
             </p>
           </div>
         </footer>
@@ -292,7 +303,6 @@ function TimelinePage() {
           {/* Timeline Events */}
           <div className="space-y-16">
             {timelineEvents.map((event, index) => {
-              const Icon = getIcon(event.type)
               const isLeft = index % 2 === 0
               const isAnimationVisible = visibleAnimations.has(event.id)
               
@@ -411,7 +421,7 @@ function TimelinePage() {
           </h2>
           
           <p className="font-elegant text-lg text-gray-600">
-            Here's to many more beautiful memories together ✨
+            Here&apos;s to many more beautiful memories together ✨
           </p>
         </div>
       </motion.footer>
